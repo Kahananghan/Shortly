@@ -1,10 +1,16 @@
-import { shorturlservice } from "../services/shorturlservice.js"
+import { createShortUrlWithoutUser, createShortUrlWithUser} from "../services/shorturlservice.js"
 import urlschema from '../models/shorturlmodel.js'; 
 import tryCatch from "../utils/tryCatchHandler.js";
 
 export const createshorturl = tryCatch(async (req,res) => {
-    const {url} = req.body
-    const shorturl = await shorturlservice(url)
+    const {url, slug} = req.body
+    let shorturl;
+    if(req.user){
+        shorturl = await createShortUrlWithUser(url, req.user._id, slug)
+    }else{
+        shorturl = await createShortUrlWithoutUser(url)
+    }
+    
     res.status(200).json({ shorturl: process.env.APP_URI + shorturl})
 })
 
