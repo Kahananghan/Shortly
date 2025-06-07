@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { registeruser } from '../apis/userapi';
+import { useNavigate } from '@tanstack/react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../store/slice/authSlice';
 
 const RegisterForm = ({state}) => {
   const [name, setName] = useState('');
@@ -7,6 +10,9 @@ const RegisterForm = ({state}) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const auth = useSelector(state => state.auth);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -14,7 +20,9 @@ const RegisterForm = ({state}) => {
     setError(null);
     
     try {
-      await registeruser(name, email, password);
+      const data = await registeruser(name, email, password);
+      dispatch(login(data.user))
+      navigate({to: '/dashboard'});
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);

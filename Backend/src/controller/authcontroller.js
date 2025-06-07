@@ -7,7 +7,7 @@ export const register_user = tryCatch (async (req,res) => {
     const {token, user} = await register_user_service(name, email, password)
     req.user = user
     res.cookie('token', token, cookieOptions)  
-    res.status(200).json({message: 'register successful'})
+    res.status(200).json({user:user, message: 'register successful'})
 })
 
 export const login_user = tryCatch (async (req,res) => {
@@ -15,5 +15,14 @@ export const login_user = tryCatch (async (req,res) => {
     const {token, user} = await login_user_service(email, password)
     req.user = user
     res.cookie('token', token, cookieOptions)
-    res.status(200).json({message: 'login successful'})
+    res.status(200).json({user:user, message: 'login successful'})
+})
+
+export const logout_user = tryCatch(async (req, res) => {
+    res.clearCookie('token', cookieOptions)
+    res.status(200).json({message: 'logout successful'})
+})
+
+export const get_user = tryCatch(async (req, res) => {
+    res.status(200).json({user: req.user})
 })

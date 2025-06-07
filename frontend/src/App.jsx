@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import Homepage from './Pages/Homepage';
-import Authpage from './Pages/Authpage';
+import { Outlet } from '@tanstack/react-router';
+import Navbar from './Components/Navbar';
 
 const App = () => {
   return (
-    <>
-        {/* <Homepage/> */}
-        <Authpage />
+    <>  
+        <Navbar />
+        <Outlet />
     </>
   );
 };
