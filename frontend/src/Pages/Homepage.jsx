@@ -1,4 +1,3 @@
-import React from 'react'
 import Urlform from '../Components/Urlform'
 
 const Homepage = () => {

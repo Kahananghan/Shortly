@@ -19,3 +19,8 @@ export const getuser = async () => {
     const {data} = await axiosInstance.get("/api/auth/me");
     return data;
 };
+
+export const getalluserurls = async () => {
+    const {data} = await axiosInstance.post("/api/user/urls");
+    return data;
+};

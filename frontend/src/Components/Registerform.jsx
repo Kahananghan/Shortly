@@ -22,7 +22,7 @@ const RegisterForm = ({state}) => {
     try {
       const data = await registeruser(name, email, password);
       dispatch(login(data.user))
-      navigate({to: '/dashboard'});
+      navigate({to: '/'});
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);

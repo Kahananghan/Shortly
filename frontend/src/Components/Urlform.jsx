@@ -1,13 +1,20 @@
 import React, { useState } from 'react'
 import { createshorturl } from '../apis/shorturlapi'
+import { useSelector } from 'react-redux'
+import { useQueryClient } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
 
 const Urlform = () => {
-  const [url, seturl] = useState("https://www.google.com")
+  const [url, seturl] = useState("")
   const [shorturl, setshorturl] = useState("")
   const [copied, setcopied] = useState(false)
+  const [customSlug, setCustomSlug] = useState("")
+  const { isAuthenticated } = useSelector((state) => state.auth)
+  const queryClient = useQueryClient()
 
   const submitHandler = async () => {
-    const shorturl = await createshorturl(url)
+    const shorturl = await createshorturl(url, customSlug)
+    queryClient.invalidateQueries({ queryKey: ['userUrls'] })
     setshorturl(shorturl)
   }
 
@@ -16,6 +23,8 @@ const Urlform = () => {
     setcopied(true)
     setTimeout(() => setcopied(false), 2000)
   }
+
+  
 
   return (
 
@@ -30,13 +39,40 @@ const Urlform = () => {
           className="w-full px-4 py-2 border rounded-xl  focus:outline-none focus:ring focus:border-blue-500 mb-4"
         />
       </div>
+
+      {isAuthenticated ? (
+        <div className='mt-4'>
+          <label htmlFor="customSlug" className='block text-sm font-medium text-gray-700 mb-1'>Custom URL (Optional)</label>
+          <input
+            type="text"
+            placeholder="Enter Custom URL (optional)"
+            onChange={(e) => setCustomSlug(e.target.value)}
+            value={customSlug}
+            className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:border-blue-500 mb-4"
+          />
+        </div>
+      ):(
+            <div className="mt-6 text-center">
+              <p className="text-gray-600 mb-2">
+                Create an account to use custom slugs and track your URLs
+              </p>
+              <Link 
+                to="/auth" 
+                className="text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Login or Register
+              </Link>
+            </div>
+        )
+      }
+      
+
         <button
           onClick={submitHandler}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl transition"
         >
           Shorten URL
         </button>
-
         
       {shorturl && (
         <div className="mt-4 p-4 bg-zinc-100 rounded-xl shadow-md space-y-2">

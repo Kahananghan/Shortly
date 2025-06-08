@@ -21,7 +21,7 @@ const LoginForm = ({state}) => {
     try {
       const data = await loginuser(email, password); 
       dispatch(login(data.user))
-      navigate({to: '/dashboard'  }); 
+      navigate({to: '/'  }); 
       setIsLoading(false);
     } catch (err) {
       setError('Invalid email or password');

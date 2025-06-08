@@ -24,7 +24,6 @@ export const createShortUrlWithUser = async (url, userid, slug=null) => {
         if (!shortUrl) throw new Error("Short URL not generated");
     }
 
-    console.log("Saving new short URL:", shortUrl);
     const savedUrl = await saveshorturl(url, shortUrl, userid);
     if (!savedUrl) throw new Error("Failed to save short URL");
     return shortUrl;
