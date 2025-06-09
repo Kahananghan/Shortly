@@ -9,14 +9,24 @@ const Urlform = () => {
   const [shorturl, setshorturl] = useState("")
   const [copied, setcopied] = useState(false)
   const [customSlug, setCustomSlug] = useState("")
+  const [error, setError] = useState("")
   const { isAuthenticated } = useSelector((state) => state.auth)
   const queryClient = useQueryClient()
 
   const submitHandler = async () => {
+    try{
+    setError("")
     const shorturl = await createshorturl(url, customSlug)
     queryClient.invalidateQueries({ queryKey: ['userUrls'] })
     setshorturl(shorturl)
-  }
+  }catch(err){
+    if (err.response && err.response.data && err.response.data.message === "This custom url already exists") {
+        setError("This custom URL already exists. Please try another one.")
+      } else {
+        setError("An error occurred. Please try again.")
+      }
+    }
+  } 
 
   const copyClipboard = () => {
     navigator.clipboard.writeText(shorturl)
@@ -50,6 +60,9 @@ const Urlform = () => {
             value={customSlug}
             className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:border-blue-500 mb-4"
           />
+          {error && (
+            <div className="text-red-500 text-sm mb-2">{error}</div>
+          )}
         </div>
       ):(
             <div className="mt-6 text-center">

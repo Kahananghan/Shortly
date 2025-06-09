@@ -9,6 +9,7 @@ const LoginForm = ({state}) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [loginMessage, setLoginMessage] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch()
   const auth = useSelector(state => state.auth);
@@ -21,7 +22,12 @@ const LoginForm = ({state}) => {
     try {
       const data = await loginuser(email, password); 
       dispatch(login(data.user))
-      navigate({to: '/'  }); 
+      setLoginMessage('Login successful! Redirecting...');
+    
+      setTimeout(() => {
+        navigate({to: '/'});
+      }, 1500); 
+
       setIsLoading(false);
     } catch (err) {
       setError('Invalid email or password');
@@ -39,6 +45,12 @@ const LoginForm = ({state}) => {
         </div>
       )}
       
+      {loginMessage && (
+        <div className="mb-4 p-2 bg-green-100 text-green-700 rounded text-center">
+          {loginMessage}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <input

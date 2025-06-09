@@ -10,6 +10,7 @@ const RegisterForm = ({state}) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch()
   const auth = useSelector(state => state.auth);
@@ -22,7 +23,12 @@ const RegisterForm = ({state}) => {
     try {
       const data = await registeruser(name, email, password);
       dispatch(login(data.user))
-      navigate({to: '/'});
+      setSuccessMessage('Registration successful! Redirecting...');
+
+      setTimeout(() => {
+        navigate({to: '/'});
+      }, 1500);
+
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
@@ -37,6 +43,12 @@ const RegisterForm = ({state}) => {
       {error && (
         <div className="mb-4 p-2 bg-red-100 text-red-700 rounded text-center">
           {error}
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="mb-4 p-2 bg-green-100 text-green-700 rounded text-center">
+          {successMessage}
         </div>
       )}
       
