@@ -12,6 +12,7 @@ const UserUrls = () => {
     queryFn: getUserUrls,
     refetchInterval: 30000,
     staleTime: 0,
+    enabled: isAuthenticated
   })
 
   const copyToClipboard = (url, id) => {
@@ -37,9 +38,9 @@ const UserUrls = () => {
   }
 
   return (
-    <div className="mt-8">
+    <div className="mt-4">
       <h3 className="text-xl font-semibold mb-4">Your URLs</h3>
-      <div className="overflow-x-auto h-65">
+      <div className="overflow-x-auto h-87">
         <table className="min-w-full bg-white rounded-lg overflow-hidden">
           <thead className="bg-gray-100">
             <tr>
