@@ -1,20 +1,15 @@
-import React, { useState } from 'react'
-import LoginForm from '../Components/Loginform'
-import RegisterForm from '../Components/Registerform'
+import Leftauth from '../Components/Leftauth';
+import Rightauth from '../Components/Rightauth';
 
 const Authpage = () => {
-    const [Login, setLogin] = useState(true);
+  
 
   return (
-    <div>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-       <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">URL Shortener</h2>
-            
-            {Login ? <LoginForm  state={setLogin} /> : <RegisterForm  state={setLogin} />}
-
-       </div>
-    </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl flex rounded-2xl shadow-2xl overflow-hidden">
+        <Leftauth />
+        <Rightauth />
+      </div>
     </div>
   )
 }

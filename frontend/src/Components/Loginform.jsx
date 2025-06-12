@@ -22,10 +22,10 @@ const LoginForm = ({state}) => {
     try {
       const data = await loginuser(email, password); 
       dispatch(login(data.user))
-      setLoginMessage('Login successful! Redirecting...');
+      setLoginMessage('Login successfull! Redirecting...');
     
       setTimeout(() => {
-        navigate({to: '/'});
+        navigate({to: '/home'});
       }, 1500); 
 
       setIsLoading(false);

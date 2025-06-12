@@ -4,6 +4,6 @@ import Authpage from "../Pages/Authpage"
 
 export const AuthRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/auth',
+  path: '/',
   component: Authpage,
 })

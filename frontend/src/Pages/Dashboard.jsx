@@ -6,8 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getUserUrls } from '../apis/shorturlapi'
 
 const Dashboard = () => {
-  const { user } = useSelector((state) => state.auth);
-  const { isAuthenticated } = useSelector(state => state.auth);
+  const { isAuthenticated, user } = useSelector(state => state.auth);
   
   // Use React Query to fetch URLs
   const { data: urls = [] } = useQuery({
@@ -20,9 +19,9 @@ const Dashboard = () => {
   
   // Get user display name safely
   const getUserDisplayName = () => {
-    if (!user.user) return 'User';
-    if (user.user.name) return user.user.name;
-    if (user.user.email) return user.user.email.split('@')[0];
+    if (!user) return 'User';
+    if (user.name) return user.name;
+    if (user.email) return user.email.split('@')[0];
     return 'User';
   };
   

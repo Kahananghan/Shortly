@@ -23,10 +23,10 @@ const RegisterForm = ({state}) => {
     try {
       const data = await registeruser(name, email, password);
       dispatch(login(data.user))
-      setSuccessMessage('Registration successful! Redirecting...');
+      setSuccessMessage('Registration successfull! Redirecting...');
 
       setTimeout(() => {
-        navigate({to: '/'});
+        navigate({to: '/home'});
       }, 1500);
 
       setIsLoading(false);

@@ -1,11 +1,11 @@
 import { createRoute } from "@tanstack/react-router"
 import { rootRoute } from "./routeTree"
-import Homepage from "../Pages/Homepage"
+import Account from "../Pages/Account"
 import { checkAuth } from "../utils/helper"
 
-export const HomepageRoute = createRoute({
+export const AccountRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/home',
-  component: Homepage,
-  beforeLoad : checkAuth
+  path: '/account',
+  component: Account,
+  beforeLoad: checkAuth
 })

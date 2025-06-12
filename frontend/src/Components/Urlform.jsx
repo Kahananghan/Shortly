@@ -40,6 +40,7 @@ const Urlform = () => {
 
     <div className='space-y-4'>
       <div>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Enter Your URL</label>
         <input
           type="url"
           placeholder="https://example.com"
