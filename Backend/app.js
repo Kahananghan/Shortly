@@ -11,19 +11,50 @@ import cookieParser from "cookie-parser"
 import userroute from "./src/routes/userroute.js"
 
 const app = express()
-app.use(cors({
-    origin : process.env.FRONTEND_URI,
-    credentials : true,
+// CORS configuration
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+
+        const allowedOrigins = [
+            process.env.FRONTEND_URI,
+            'http://localhost:5173', // Local development
+            'http://localhost:3000', // Local development
+            'https://shortly-three-rouge.vercel.app' // Production frontend
+        ].filter(Boolean); 
+
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.log('CORS blocked origin:', origin);
+            console.log('Allowed origins:', allowedOrigins);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'Origin', 'Referer']
-}))
+    allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'Origin', 'Referer', 'X-Requested-With'],
+    optionsSuccessStatus: 200 
+};
+
+app.use(cors(corsOptions))
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 
+// Debug middleware to log requests
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path} - Origin: ${req.get('Origin') || 'No Origin'}`);
+    next();
+});
+
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Shortly API is running' })
+  res.status(200).json({
+    message: 'Shortly API is running',
+    environment: process.env.NODE_ENV || 'development',
+    frontendUri: process.env.FRONTEND_URI
+  })
 })
 app.use('/api/auth', authroute)
 app.use('/api/create', shorturlroute)
