@@ -2,7 +2,10 @@ import express from "express"
 import dotenv from "dotenv"
 dotenv.config("./.env")
 import cors from "cors"
+import mongoose from "mongoose"
 import connectDB from "./src/config/mongo.config.js"
+
+mongoose.set('bufferCommands', false)
 import authroute from './src/routes/authroute.js'
 import shorturlroute from './src/routes/shorturlroute.js'
 import { redirectfromshorturl } from "./src/controller/shorturlcontroller.js"
