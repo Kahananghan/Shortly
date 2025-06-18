@@ -43,12 +43,6 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 
-// Debug middleware to log requests
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.path} - Origin: ${req.get('Origin') || 'No Origin'}`);
-    next();
-});
-
 app.get('/', (req, res) => {
   res.status(200).json({
     message: 'Shortly API is running',
