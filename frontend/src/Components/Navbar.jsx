@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/slice/authSlice';
 import { logoutuser } from '../apis/userapi';
 import { useState, useEffect } from 'react';
-import Logo from '../components/Logo';
+import Logo from '../Components/Logo';
 import { motion } from 'framer-motion';
 
 const Navbar = () => {
