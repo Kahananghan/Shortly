@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/slice/authSlice';
 import { logoutuser } from '../apis/userapi';
 import { useState, useEffect } from 'react';
+import Logo from '../components/Logo';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const { isAuthenticated, user } = useSelector(state => state.auth);
@@ -39,12 +41,10 @@ const Navbar = () => {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Link to={isAuthenticated ? "/home" : "/"} className="flex items-center group">
-                <div className="bg-white p-2 rounded-full shadow-md transition-transform group-hover:scale-110">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clipRule="evenodd" />
-                  </svg>
+                <div className="transition-transform group-hover:scale-110">
+                  <Logo size="lg" />
                 </div>
-                <span className="ml-2 text-white font-bold text-3xl tracking-tight">Shortly</span>
+                <span className="ml-3 text-white font-bold text-3xl tracking-tight">Shortly</span>
               </Link>
             </div>
             
@@ -74,36 +74,36 @@ const Navbar = () => {
                   <div className="flex items-center space-x-3">
                     {user && (
                       <Link to="/account">
-                        <img 
-                          src={user.avatar || (user.user && user.user.avatar) || ''}
-                          alt="Profile" 
+                        <img
+                          src={'/default-avatar.svg'}
+                          alt="Profile"
                           className="h-8 w-8 rounded-full border-2 border-white hover:border-blue-300 cursor-pointer transition-all"
                           title="My Account"
                           onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = 'https://www.gravatar.com/avatar/default?d=mp';
+                            e.target.src = '/default-avatar.svg';
                           }}
                         />
                       </Link>
                     )}
-                    <button 
+                    <button
                       onClick={handleLogout}
-                      className="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-md font-medium transition-colors"
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 px-4 py-2 rounded-md font-medium transition-all shadow-md hover:shadow-lg"
                     >
                       Logout
                     </button>
                   </div>
                 ) : (
                   <div className="flex space-x-3">
-                    <Link 
-                      to="/" 
-                      className="text-white hover:bg-white/20 px-3 py-2 rounded-md font-medium transition-colors"
+                    <Link
+                      to="/"
+                      className="text-white hover:bg-white/20 px-3 py-2 rounded-md font-medium transition-colors border border-white/30 hover:border-white/50"
                     >
                       Login
                     </Link>
-                    <Link 
-                      to="/" 
-                      className="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-md font-medium transition-colors"
+                    <Link
+                      to="/"
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 px-4 py-2 rounded-md font-medium transition-all shadow-md hover:shadow-lg"
                     >
                       Sign Up
                     </Link>
@@ -173,13 +173,13 @@ const Navbar = () => {
                         className="flex items-center px-3 hover:bg-white/10 rounded-md transition-colors"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <img 
-                          src={user.avatar || (user.user && user.user.avatar) || ''}
-                          alt="Profile" 
+                        <img
+                          src={'/default-avatar.svg'}
+                          alt="Profile"
                           className="h-8 w-8 rounded-full border-2 border-white"
                           onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = 'https://www.gravatar.com/avatar/default?d=mp';
+                            e.target.src = '/default-avatar.svg';
                           }}
                         />
                         <div className="ml-3">
@@ -194,12 +194,12 @@ const Navbar = () => {
                     )}
                     
                 <div className="mt-3">
-                  <button 
+                  <button
                     onClick={() => {
                       handleLogout();
                       setIsMenuOpen(false);
                     }}
-                    className="bg-white text-blue-600 hover:bg-blue-50 block w-full text-left px-3 py-2 rounded-md font-medium transition-colors"
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 block w-full text-left px-3 py-2 rounded-md font-medium transition-all shadow-md hover:shadow-lg"
                   >
                     Logout
                   </button>
@@ -207,16 +207,16 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="pt-4 pb-3 border-t border-white/20 space-y-1">
-                <Link 
-                  to="/" 
-                  className="text-white hover:bg-white/20 block px-3 py-2 rounded-md font-medium transition-colors"
+                <Link
+                  to="/"
+                  className="text-white hover:bg-white/20 block px-3 py-2 rounded-md font-medium transition-colors border border-white/30 hover:border-white/50"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Login
                 </Link>
-                <Link 
-                  to="/" 
-                  className="bg-white text-blue-600 hover:bg-blue-50 block px-3 py-2 rounded-md font-medium transition-colors"
+                <Link
+                  to="/"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 block px-3 py-2 rounded-md font-medium transition-all shadow-md hover:shadow-lg"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sign Up
@@ -228,9 +228,47 @@ const Navbar = () => {
       </nav>
       
       {logoutMessage && (
-        <div className="fixed top-20 right-50 bg-red-500 text-white px-4 py-2 rounded-md shadow-lg z-50 animate-fade-in-out">
-          {logoutMessage}
-        </div>
+        <motion.div
+          initial={{ opacity: 0, x: 100, scale: 0.8 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          exit={{ opacity: 0, x: 100, scale: 0.8 }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 20,
+            duration: 0.4
+          }}
+          className="fixed top-20 right-10 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-2 rounded-lg shadow-lg z-50 border border-red-400"
+        >
+          <motion.div
+            className="flex items-center space-x-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+          >
+            <motion.div
+              className="bg-white rounded-full w-5 h-5 flex items-center justify-center"
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 400,
+                damping: 15,
+                delay: 0.1
+              }}
+            >
+              <span className="text-red-600 font-bold text-xs">!</span>
+            </motion.div>
+            <motion.span
+              className="text-sm"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.3 }}
+            >
+              {logoutMessage}
+            </motion.span>
+          </motion.div>
+        </motion.div>
       )}
     </>
   );

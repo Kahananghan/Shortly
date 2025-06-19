@@ -1,5 +1,5 @@
 import { createShortUrlWithoutUser, createShortUrlWithUser} from "../services/shorturlservice.js"
-import urlschema from '../models/shorturlmodel.js'; 
+import urlschema from '../models/shorturlmodel.js';
 import tryCatch from "../utils/tryCatchHandler.js";
 
 export const createshorturl = tryCatch(async (req,res) => {
@@ -10,8 +10,22 @@ export const createshorturl = tryCatch(async (req,res) => {
     }else{
         shorturl = await createShortUrlWithoutUser(url)
     }
-    
+
     res.status(200).json({ shorturl: process.env.APP_URI + shorturl})
+})
+
+export const deleteShortUrl = tryCatch(async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    const url = await urlschema.findOne({ _id: id, user: userId });
+
+    if (!url) {
+        return res.status(404).json({ message: "URL not found or you don't have permission to delete it" });
+    }
+
+    await urlschema.findByIdAndDelete(id);
+    res.status(200).json({ message: "URL deleted successfully" });
 })
 
 export const redirectfromshorturl = tryCatch(async (req,res) => {

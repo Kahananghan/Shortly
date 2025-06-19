@@ -55,6 +55,7 @@ app.get('/', (req, res) => {
 })
 app.use('/api/auth', authroute)
 app.use('/api/create', shorturlroute)
+app.use('/api/url', shorturlroute)
 app.use('/api/user', userroute)
 app.get('/:id', redirectfromshorturl)
 app.use(errorHandler)

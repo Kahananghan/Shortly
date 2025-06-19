@@ -83,7 +83,7 @@ const Urlform = () => {
 
         <button
           onClick={submitHandler}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl transition"
+          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:bg-blue-700 text-white py-2 rounded-xl transition"
         >
           Shorten URL
         </button>

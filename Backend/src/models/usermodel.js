@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     },
     avatar: {
         type: String,
-        default: "", // will be assigned in pre-save
+        default: "", 
     },
 });
 

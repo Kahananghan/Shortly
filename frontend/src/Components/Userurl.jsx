@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
-import { getUserUrls } from '../apis/shorturlapi'
+import { getUserUrls, deleteUrl } from '../apis/shorturlapi'
 import { useSelector } from 'react-redux'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { Trash2, Loader2 } from 'lucide-react'
 
 const UserUrls = () => {
   const [copiedId, setCopiedId] = useState(null)
+  const [deletingId, setDeletingId] = useState(null)
   const { isAuthenticated } = useSelector(state => state.auth)
+  const queryClient = useQueryClient()
 
   const { data: urls, isLoading, isError, error } = useQuery({
     queryKey: ['userUrls'],
@@ -19,6 +22,24 @@ const UserUrls = () => {
     navigator.clipboard.writeText(url)
     setCopiedId(id)
     setTimeout(() => setCopiedId(null), 2000)
+  }
+
+  const handleDeleteUrl = async (urlId) => {
+    if (!confirm('Are you sure you want to delete this URL?')) {
+      return
+    }
+
+    try {
+      setDeletingId(urlId)
+      await deleteUrl(urlId)
+      // Refetch the URLs to update the list
+      queryClient.invalidateQueries(['userUrls'])
+    } catch (error) {
+      console.error('Failed to delete URL:', error)
+      alert('Failed to delete URL. Please try again.')
+    } finally {
+      setDeletingId(null)
+    }
   }
 
   if (!isAuthenticated) {
@@ -38,9 +59,9 @@ const UserUrls = () => {
   }
 
   return (
-    <div className="mt-4">
+    <div className="mt-2">
       <h3 className="text-xl font-semibold mb-4">Your URLs</h3>
-      <div className="overflow-x-auto h-95">
+      <div className="overflow-x-auto h-80">
         <table className="min-w-full bg-white rounded-lg overflow-hidden">
           <thead className="bg-gray-100">
             <tr>
@@ -51,7 +72,7 @@ const UserUrls = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {urls.reverse().map(url => (
+            {[...urls].reverse().map(url => (
               <tr key={url._id} className="hover:bg-gray-50">
                 <td className="px-4 py-3 text-sm text-gray-800 truncate max-w-xs">
                   {url.full_url}
@@ -63,16 +84,33 @@ const UserUrls = () => {
                   {url.clicks}
                 </td>
                 <td className="px-4 py-3 text-sm text-center">
-                  <button
-                    onClick={() => copyToClipboard(url.short_url, url._id)}
-                    className={`px-3 py-1 rounded text-sm font-medium transition ${
-                      copiedId === url._id 
-                        ? 'bg-green-500 text-white' 
-                        : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
-                    }`}
-                  >
-                    {copiedId === url._id ? 'Copied!' : 'Copy'}
-                  </button>
+                  <div className="flex items-center justify-center space-x-2">
+                    <button
+                      onClick={() => copyToClipboard(url.short_url, url._id)}
+                      className={`px-3 py-1 rounded text-sm font-medium transition ${
+                        copiedId === url._id
+                          ? 'bg-green-500 text-white'
+                          : 'bg-blue-500 hover:bg-blue-600 text-white'
+                      }`}
+                    >
+                      {copiedId === url._id ? 'Copied!' : 'Copy'}
+                    </button>
+                    <button
+                        onClick={() => handleDeleteUrl(url._id)}
+                        disabled={deletingId === url._id}
+                        className={`px-3 py-1 rounded text-sm font-medium flex items-center gap-2 transition ${
+                          deletingId === url._id
+                            ? 'bg-gray-400 text-white cursor-not-allowed'
+                            : 'bg-red-500 hover:bg-red-600 text-white'
+                        }`}
+                      >
+                        {deletingId === url._id ? (                       
+                            <Loader2 className="w-4 h-5 animate-spin" />
+                        ) : (                 
+                            <Trash2 className="w-4 h-5" />                            
+                        )}
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
