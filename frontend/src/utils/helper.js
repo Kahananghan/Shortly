@@ -15,6 +15,6 @@ export const checkAuth = async ({context}) =>{
         if(!isAuthenticated) return false;
         return true;
     }catch(error){
-        throw redirect({to : '/auth'});
+        throw redirect({to : '/'});
     }
 }

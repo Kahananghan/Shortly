@@ -32,7 +32,6 @@ const UserUrls = () => {
     try {
       setDeletingId(urlId)
       await deleteUrl(urlId)
-      // Refetch the URLs to update the list
       queryClient.invalidateQueries(['userUrls'])
     } catch (error) {
       console.error('Failed to delete URL:', error)
