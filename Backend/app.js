@@ -3,6 +3,8 @@ import dotenv from "dotenv"
 dotenv.config("./.env")
 import cors from "cors"
 import mongoose from "mongoose"
+import helmet from "helmet"
+import rateLimit from "express-rate-limit"
 import connectDB from "./src/config/mongo.config.js"
 
 mongoose.set('bufferCommands', false)
@@ -14,6 +16,37 @@ import cookieParser from "cookie-parser"
 import userroute from "./src/routes/userroute.js"
 
 const app = express()
+
+// Security middleware
+app.use(helmet({
+    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: ["'self'"],
+            imgSrc: ["'self'", "data:", "https:"],
+        },
+    },
+}))
+
+// Rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+})
+
+const createUrlLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 20, // limit each IP to 20 URL creations per windowMs
+    message: 'Too many URLs created from this IP, please try again later.',
+})
+
+app.use(limiter)
+
 // CORS configuration
 const corsOptions = {
     origin: function (origin, callback) {
@@ -54,12 +87,16 @@ app.get('/', (req, res) => {
   })
 })
 app.use('/api/auth', authroute)
-app.use('/api/create', shorturlroute)
+app.use('/api/create', createUrlLimiter, shorturlroute)
 app.use('/api/url', shorturlroute)
 app.use('/api/user', userroute)
 app.get('/:id', redirectfromshorturl)
 app.use(errorHandler)
 
-app.listen(3000, ()=>{
-    connectDB()
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, ()=>{
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    connectDB();
 })
