@@ -25,7 +25,9 @@ app.use(helmet({
         directives: {
             defaultSrc: ["'self'"],
             styleSrc: ["'self'", "'unsafe-inline'"],
-            scriptSrc: ["'self'"],
+            scriptSrc: ["'self'", "https://accounts.google.com", "https://apis.google.com"],
+            frameSrc: ["https://accounts.google.com"],
+            connectSrc: ["'self'", "https://accounts.google.com", "https://oauth2.googleapis.com"],
             imgSrc: ["'self'", "data:", "https:"],
         },
     },
@@ -76,9 +78,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
-// Cross-Origin-Opener-Policy header for Google Sign-In
+// Headers for Google Sign-In
 app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('Cross-Origin-Opener-Policy', 'unsafe-none');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'unsafe-none');
   next();
 });
 
@@ -103,8 +106,13 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, ()=>{
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-    connectDB();
-})
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT}`);
+        console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`📊 Database connected`);
+    });
+}).catch((error) => {
+    console.error('Failed to connect to database:', error);
+    process.exit(1);
+});

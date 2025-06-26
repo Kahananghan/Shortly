@@ -29,7 +29,11 @@ const LoginForm = ({state}) => {
       
       window.google.accounts.id.renderButton(
         document.getElementById('google-signin-button'),
-        { theme: 'outline', size: 'large' }
+        { 
+          theme: 'outline', 
+          size: 'large',
+          type: 'standard'
+        }
       );
     };
   }, []);
@@ -154,7 +158,17 @@ const LoginForm = ({state}) => {
           </div>
         </div>
         
-        <div id="google-signin-button" className="mt-4"></div>
+        <div id="google-signin-button" className="mt-4 w-full" style={{display: 'flex', justifyContent: 'center'}}></div>
+        <style dangerouslySetInnerHTML={{__html: `
+          #google-signin-button > div {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          #google-signin-button iframe {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+        `}} />
       </div>
       
       <div className="mt-4 text-center">

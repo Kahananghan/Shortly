@@ -166,7 +166,17 @@ const RegisterForm = ({state}) => {
           </div>
         </div>
         
-        <div id="google-register-button" className="mt-4"></div>
+        <div id="google-register-button" className="mt-4 w-full" style={{display: 'flex', justifyContent: 'center'}}></div>
+        <style dangerouslySetInnerHTML={{__html: `
+          #google-register-button > div {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          #google-register-button iframe {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+        `}} />
       </div>
       
       <div className="mt-4 text-center ">

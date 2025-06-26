@@ -6,6 +6,8 @@ A modern, full-stack URL shortener application built with Node.js, Express, Reac
 
 - 🔗 Shorten long URLs instantly
 - 👤 User authentication and registration
+- 🔐 Google OAuth integration for easy sign-in/sign-up
+- 👁️ Password visibility toggle with eye icon
 - 📊 Click tracking and analytics
 - 🎨 Custom URL slugs for registered users
 - 📱 Responsive design
@@ -18,10 +20,12 @@ A modern, full-stack URL shortener application built with Node.js, Express, Reac
 - Node.js & Express.js
 - MongoDB with Mongoose
 - JWT Authentication
+- Google OAuth 2.0 integration
 - bcryptjs for password hashing
 - Helmet for security headers
 - Rate limiting with express-rate-limit
 - Input validation
+- CORS configuration for cross-origin requests
 
 ### Frontend
 - React 19
@@ -62,14 +66,18 @@ npm install
 
 Backend (.env):
 ```bash
-cp .env.example .env
-# Edit .env with your configuration
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+FRONTEND_URI=http://localhost:5173
+GOOGLE_CLIENT_ID=your_google_oauth_client_id
+PORT=3000
 ```
 
 Frontend (.env):
 ```bash
-cp .env.example .env
-# Edit .env with your configuration
+VITE_BACKEND_URI=http://localhost:3000
+VITE_GOOGLE_CLIENT_ID=your_google_oauth_client_id
+VITE_NODE_ENV=development
 ```
 
 5. Start MongoDB service
@@ -93,6 +101,7 @@ npm run dev
 ### Authentication
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
+- `POST /api/auth/google` - Google OAuth authentication
 - `POST /api/auth/logout` - Logout user
 - `GET /api/auth/me` - Get current user
 
@@ -105,23 +114,43 @@ npm run dev
 ## Security Features
 
 - Password hashing with bcryptjs
-- JWT token authentication
+- JWT token authentication (cookies + Authorization header)
+- Google OAuth 2.0 secure authentication
 - Rate limiting (100 requests/15min, 20 URL creations/15min)
 - Input validation and sanitization
 - Security headers with Helmet
-- CORS protection
+- CORS protection with origin validation
+- Cross-Origin-Opener-Policy for Google Sign-In
 - MongoDB injection prevention
+- Environment-based configuration
+
+## Google OAuth Setup
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing one
+3. Enable Google+ API
+4. Create OAuth 2.0 Client ID credentials
+5. Add authorized origins:
+   - `http://localhost:5173` (development)
+   - `https://your-production-domain.com` (production)
+6. Copy Client ID to environment variables
 
 ## Deployment
 
 ### Backend (Vercel)
 - Configure `vercel.json`
-- Set environment variables in Vercel dashboard
+- Set environment variables in Vercel dashboard:
+  - `MONGO_URI`
+  - `JWT_SECRET`
+  - `GOOGLE_CLIENT_ID`
+  - `FRONTEND_URI`
 - Deploy with `vercel --prod`
 
 ### Frontend (Vercel)
 - Configure build settings
-- Set environment variables
+- Set environment variables:
+  - `VITE_BACKEND_URI`
+  - `VITE_GOOGLE_CLIENT_ID`
 - Deploy with `vercel --prod`
 
 ## Contributing

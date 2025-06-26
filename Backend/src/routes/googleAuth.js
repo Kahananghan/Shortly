@@ -2,6 +2,8 @@ import express from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import User from '../models/usermodel.js';
 import { signtoken } from '../utils/helper.js';
+import mongoose from 'mongoose';
+import connectDB from '../config/mongo.config.js';
 
 const router = express.Router();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -18,6 +20,11 @@ router.post('/google', async (req, res) => {
     
     const payload = ticket.getPayload();
     const { sub: googleId, email, name, picture } = payload;
+    
+    // Ensure database connection
+    if (mongoose.connection.readyState !== 1) {
+      await connectDB();
+    }
     
     let user = await User.findOne({ email });
     let isExistingUser = false;
@@ -72,7 +79,16 @@ router.post('/google', async (req, res) => {
     
   } catch (error) {
     console.error('Google auth error:', error);
-    res.status(400).json({ success: false, message: 'Invalid Google token' });
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      clientId: process.env.GOOGLE_CLIENT_ID ? 'Present' : 'Missing'
+    });
+    res.status(400).json({ 
+      success: false, 
+      message: 'Invalid Google token',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 });
 
