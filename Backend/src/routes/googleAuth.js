@@ -8,13 +8,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 router.post('/google', async (req, res) => {
   try {
-    const { token } = req.body;
-    console.log('Received token:', token ? 'Token present' : 'No token');
-    console.log('Client ID:', process.env.GOOGLE_CLIENT_ID);
-    
-    if (!token) {
-      return res.status(400).json({ success: false, message: 'No token provided' });
-    }
+    const { token, isRegister, isLogin } = req.body;
     
     // Verify the Google token
     const ticket = await client.verifyIdToken({
@@ -24,12 +18,19 @@ router.post('/google', async (req, res) => {
     
     const payload = ticket.getPayload();
     const { sub: googleId, email, name, picture } = payload;
-    console.log('Google user:', { email, name });
     
-    // Check if user exists
     let user = await User.findOne({ email });
+    let isExistingUser = false;
     
     if (!user) {
+      if (isLogin) {
+        return res.json({
+          success: true,
+          isNewUser: true,
+          message: 'No account found'
+        });
+      }
+      
       user = new User({
         email,
         name,
@@ -38,10 +39,25 @@ router.post('/google', async (req, res) => {
         isVerified: true
       });
       await user.save();
+    } else {
+      isExistingUser = true;
+      if (isRegister) {
+        return res.json({
+          success: true,
+          isExistingUser: true,
+          message: 'User already exists'
+        });
+      }
     }
     
-    // Generate JWT token
     const jwtToken = signtoken({ id: user._id });
+
+    res.cookie('token', jwtToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 1000
+    });
     
     res.json({
       success: true,

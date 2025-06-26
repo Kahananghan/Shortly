@@ -30,7 +30,7 @@ const RegisterForm = ({state}) => {
       
       window.google.accounts.id.renderButton(
         document.getElementById('google-register-button'),
-        { theme: 'outline', size: 'large' }
+        { theme: 'outline', size: 'large', text: 'signup_with' }
       );
     };
   }, []);
@@ -40,13 +40,17 @@ const RegisterForm = ({state}) => {
       const result = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: response.credential })
+        body: JSON.stringify({ token: response.credential, isRegister: true })
       });
       const data = await result.json();
       if (data.success) {
-        localStorage.setItem('token', data.token);
-        dispatch(login(data.user));
-        navigate({to: '/home'});
+        if (data.isExistingUser) {
+          setError('User already exists with this email. Please login instead.');
+        } else {
+          localStorage.setItem('token', data.token);
+          dispatch(login(data.user));
+          navigate({to: '/home'});
+        }
       } else {
         console.error('Google auth error:', data);
         setError(data.message || 'Google registration failed');
@@ -79,8 +83,7 @@ const RegisterForm = ({state}) => {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
+    <div className="max-w-md mx-auto mt-5 p-6 bg-white rounded-lg">
       
       {error && (
         <div className="mb-4 p-2 bg-red-100 text-red-700 rounded text-center">

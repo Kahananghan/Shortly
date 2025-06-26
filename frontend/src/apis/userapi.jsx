@@ -42,27 +42,21 @@ export const logoutuser = async () => {
 };
 
 export const getuser = async () => {
-    store.dispatch(showLoader('Fetching user details...'));
     try {
         const {data} = await axiosInstance.get("/api/auth/me");
         return data;
     } catch (error) {
         console.error("Error fetching user:", error);
         throw error;
-    } finally {
-        store.dispatch(hideLoader());
-    }
+    } 
 };
 
 export const getalluserurls = async () => {
-    store.dispatch(showLoader('Fetching all user URLs...'));
     try {
         const {data} = await axiosInstance.post("/api/user/urls");
         return data;
     } catch (error) {
         console.error("Error fetching all user URLs:", error);
         throw error;
-    } finally {
-        store.dispatch(hideLoader());
-    }
+    } 
 };

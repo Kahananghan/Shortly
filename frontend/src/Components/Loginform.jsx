@@ -39,13 +39,17 @@ const LoginForm = ({state}) => {
       const result = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: response.credential })
+        body: JSON.stringify({ token: response.credential, isLogin: true })
       });
       const data = await result.json();
       if (data.success) {
-        localStorage.setItem('token', data.token);
-        dispatch(login(data.user));
-        navigate({to: '/home'});
+        if (data.isNewUser) {
+          setError('No account found with this email. Please register first.');
+        } else {
+          localStorage.setItem('token', data.token);
+          dispatch(login(data.user));
+          navigate({to: '/home'});
+        }
       } else {
         setError('Google login failed');
       }
@@ -78,8 +82,7 @@ const LoginForm = ({state}) => {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+    <div className="max-w-md mx-auto mt-5 p-6 bg-white rounded-lg">
       
       {error && (
         <div className="mb-4 p-2 bg-red-100 text-red-700 rounded text-center">
