@@ -57,7 +57,7 @@ const corsOptions = {
             process.env.FRONTEND_URI,
             'http://localhost:5173', // Local development
             'http://localhost:3000', // Local development
-            'https://shortly-three-rouge.vercel.app' // Production frontend
+            'https://shortly-kahan.vercel.app' // Production frontend
         ].filter(Boolean); 
 
         if (allowedOrigins.includes(origin)) {
@@ -75,6 +75,12 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions))
+
+// Cross-Origin-Opener-Policy header for Google Sign-In
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  next();
+});
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
