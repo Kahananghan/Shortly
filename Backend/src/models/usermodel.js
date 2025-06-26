@@ -18,8 +18,18 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: function() {
+            return !this.googleId; // Password not required for Google users
+        },
         minlength: 6
+    },
+    googleId: {
+        type: String,
+        sparse: true // Allow multiple null values but unique non-null values
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     },
     avatar: {
         type: String,
@@ -44,8 +54,8 @@ userSchema.pre("save", async function (next) {
         this.avatar = gravatarurl(this.email);
     }
     
-    // Hash password if it's modified
-    if (this.isModified('password')) {
+    // Hash password if it's modified and exists
+    if (this.isModified('password') && this.password) {
         this.password = await bcrypt.hash(this.password, 12);
     }
     

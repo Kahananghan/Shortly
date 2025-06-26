@@ -14,6 +14,7 @@ import { redirectfromshorturl } from "./src/controller/shorturlcontroller.js"
 import errorHandler from "./src/utils/errorHandler.js"
 import cookieParser from "cookie-parser"
 import userroute from "./src/routes/userroute.js"
+import googleAuthRoute from './src/routes/googleAuth.js'
 
 const app = express()
 
@@ -87,6 +88,7 @@ app.get('/', (req, res) => {
   })
 })
 app.use('/api/auth', authroute)
+app.use('/api/auth', googleAuthRoute)
 app.use('/api/create', createUrlLimiter, shorturlroute)
 app.use('/api/url', shorturlroute)
 app.use('/api/user', userroute)
