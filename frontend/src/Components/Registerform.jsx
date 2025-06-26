@@ -25,12 +25,13 @@ const RegisterForm = ({state}) => {
     script.onload = () => {
       window.google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-        callback: handleGoogleLogin
+        callback: handleGoogleLogin,
+        auto_select: false
       });
       
       window.google.accounts.id.renderButton(
         document.getElementById('google-register-button'),
-        { theme: 'outline', size: 'large', text: 'signup_with' }
+        { theme: 'outline', size: 'large', text: 'signup_with', width: "100%" }
       );
     };
   }, []);
@@ -166,17 +167,7 @@ const RegisterForm = ({state}) => {
           </div>
         </div>
         
-        <div id="google-register-button" className="mt-4 w-full" style={{display: 'flex', justifyContent: 'center'}}></div>
-        <style dangerouslySetInnerHTML={{__html: `
-          #google-register-button > div {
-            width: 100% !important;
-            max-width: 100% !important;
-          }
-          #google-register-button iframe {
-            width: 100% !important;
-            max-width: 100% !important;
-          }
-        `}} />
+         <div id="google-register-button" className="mt-4 w-full"  ></div>
       </div>
       
       <div className="mt-4 text-center ">
