@@ -17,6 +17,7 @@ const RegisterForm = ({state}) => {
       #google-register-button .gsi-material-button {
         width: 100% !important;
         min-width: 100% !important;
+        display: block !important;
       }
     `;
     document.head.appendChild(style);
@@ -62,21 +63,21 @@ const RegisterForm = ({state}) => {
       );
       
       const observer = new MutationObserver(() => {
-        const buttonElements = document.querySelectorAll(
-          'google-register-button iframe, google-register-button > div'
-        );
-        buttonElements.forEach(button => {
-          button.style.width = '100%';
-          button.style.minWidth = '100%';
-          button.style.display = 'block';
-        });
-      });
-      
-      const target = document.getElementById('google-register-button');
-      if (target) {
-        observer.observe(target, { childList: true, subtree: true });
-      }
-    };
+            const el = document.querySelector('#google-register-button iframe');
+            if (el) {
+              el.style.width = '100%';
+              el.style.minWidth = '100%';
+              el.style.maxWidth = '100%';
+            }
+          });
+
+          const target = document.getElementById('google-register-button');
+          if (target) {
+            observer.observe(target, { childList: true, subtree: true });
+          }
+
+          return () => observer.disconnect();
+  }
   }, []);
 
 
@@ -211,7 +212,9 @@ const RegisterForm = ({state}) => {
           </div>
         </div>
         
-         <div id="google-register-button" className="mt-4 w-full flex justify-center"></div>
+         <div id="google-register-wrapper" className="mt-4 w-full flex">
+          <div id="google-register-button" className="w-full"></div>
+        </div>
       </div>
       
       <div className="mt-4 text-center ">
