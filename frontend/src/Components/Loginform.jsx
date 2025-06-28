@@ -8,11 +8,15 @@ const LoginForm = ({state}) => {
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      #google-signin-button > div {
+      #google-signin-button {
         width: 100% !important;
       }
-      #google-signin-button iframe {
+      #google-signin-button > div,
+      #google-signin-button > div > div,
+      #google-signin-button iframe,
+      #google-signin-button .gsi-material-button {
         width: 100% !important;
+        min-width: 100% !important;
       }
     `;
     document.head.appendChild(style);
@@ -36,16 +40,20 @@ const LoginForm = ({state}) => {
     document.body.appendChild(script);
     
     script.onload = () => {
+      // Clear any existing Google sessions
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.cancel();
+        window.google.accounts.id.disableAutoSelect();
+      }
+      
       window.google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
         callback: handleGoogleLogin,
         auto_select: false,
         cancel_on_tap_outside: true,
-        use_fedcm_for_prompt: false
+        use_fedcm_for_prompt: false,
+        prompt_parent_id: 'google-signin-button'
       });
-      
-      // Disable One Tap
-      window.google.accounts.id.disableAutoSelect();
       
       window.google.accounts.id.renderButton(
         document.getElementById('google-signin-button'),
@@ -55,6 +63,20 @@ const LoginForm = ({state}) => {
           type: 'standard'
         }
       );
+      
+      // Observer to maintain button width
+      const observer = new MutationObserver(() => {
+        const button = document.querySelector('#google-signin-button iframe, #google-signin-button > div');
+        if (button) {
+          button.style.width = '100%';
+          button.style.minWidth = '100%';
+        }
+      });
+      
+      const target = document.getElementById('google-signin-button');
+      if (target) {
+        observer.observe(target, { childList: true, subtree: true });
+      }
     };
   }, []);
 

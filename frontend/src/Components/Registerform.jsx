@@ -8,16 +8,21 @@ const RegisterForm = ({state}) => {
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      #google-register-button > div {
+      #google-register-button {
         width: 100% !important;
       }
-      #google-register-button iframe {
+      #google-register-button > div,
+      #google-register-button > div > div,
+      #google-register-button iframe,
+      #google-register-button .gsi-material-button {
         width: 100% !important;
+        min-width: 100% !important;
       }
     `;
     document.head.appendChild(style);
     return () => document.head.removeChild(style);
   }, []);
+  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,21 +41,39 @@ const RegisterForm = ({state}) => {
     document.body.appendChild(script);
     
     script.onload = () => {
+      // Clear any existing Google sessions
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.cancel();
+        window.google.accounts.id.disableAutoSelect();
+      }
+      
       window.google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
         callback: handleGoogleLogin,
         auto_select: false,
         cancel_on_tap_outside: true,
-        use_fedcm_for_prompt: false
+        use_fedcm_for_prompt: false,
+        prompt_parent_id: 'google-register-button'
       });
-      
-      // Disable One Tap
-      window.google.accounts.id.disableAutoSelect();
       
       window.google.accounts.id.renderButton(
         document.getElementById('google-register-button'),
         { theme: 'outline', size: 'large', text: 'signup_with' }
       );
+      
+      // Observer to maintain button width
+      const observer = new MutationObserver(() => {
+        const button = document.querySelector('#google-register-button iframe, #google-register-button > div');
+        if (button) {
+          button.style.width = '100%';
+          button.style.minWidth = '100%';
+        }
+      });
+      
+      const target = document.getElementById('google-register-button');
+      if (target) {
+        observer.observe(target, { childList: true, subtree: true });
+      }
     };
   }, []);
 
