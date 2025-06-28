@@ -61,13 +61,15 @@ const RegisterForm = ({state}) => {
         { theme: 'outline', size: 'large', text: 'signup_with' }
       );
       
-      // Observer to maintain button width
       const observer = new MutationObserver(() => {
-        const button = document.querySelector('#google-register-button iframe, #google-register-button > div');
-        if (button) {
+        const buttonElements = document.querySelectorAll(
+          'google-register-button iframe, google-register-button > div'
+        );
+        buttonElements.forEach(button => {
           button.style.width = '100%';
           button.style.minWidth = '100%';
-        }
+          button.style.display = 'block';
+        });
       });
       
       const target = document.getElementById('google-register-button');
@@ -76,6 +78,7 @@ const RegisterForm = ({state}) => {
       }
     };
   }, []);
+
 
   const handleGoogleLogin = async (response) => {
     try {

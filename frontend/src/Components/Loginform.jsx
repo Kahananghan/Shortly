@@ -9,7 +9,6 @@ const LoginForm = ({state}) => {
     const style = document.createElement('style');
     style.textContent = `
       #google-signin-button {
-        width: 100% !important;
       }
       #google-signin-button > div,
       #google-signin-button > div > div,
@@ -64,13 +63,15 @@ const LoginForm = ({state}) => {
         }
       );
       
-      // Observer to maintain button width
       const observer = new MutationObserver(() => {
-        const button = document.querySelector('#google-signin-button iframe, #google-signin-button > div');
-        if (button) {
+        const buttonElements = document.querySelectorAll(
+          '#google-signin-button iframe, #google-signin-button > div'
+        );
+        buttonElements.forEach(button => {
           button.style.width = '100%';
           button.style.minWidth = '100%';
-        }
+          button.style.display = 'block';
+        });
       });
       
       const target = document.getElementById('google-signin-button');
