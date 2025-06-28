@@ -5,6 +5,20 @@ import { login } from '../store/slice/authSlice';
 import { useNavigate } from '@tanstack/react-router';
 
 const LoginForm = ({state}) => {
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      #google-signin-button > div {
+        width: 100% !important;
+      }
+      #google-signin-button iframe {
+        width: 100% !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -25,8 +39,13 @@ const LoginForm = ({state}) => {
       window.google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
         callback: handleGoogleLogin,
-        auto_select: false
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        use_fedcm_for_prompt: false
       });
+      
+      // Disable One Tap
+      window.google.accounts.id.disableAutoSelect();
       
       window.google.accounts.id.renderButton(
         document.getElementById('google-signin-button'),
@@ -159,7 +178,7 @@ const LoginForm = ({state}) => {
           </div>
         </div>
         
-        <div id="google-signin-button" className="mt-4 w-full" ></div>
+        <div id="google-signin-button" className="mt-4 w-full flex justify-center"></div>
         
       </div>
       

@@ -5,6 +5,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../store/slice/authSlice';
 
 const RegisterForm = ({state}) => {
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      #google-register-button > div {
+        width: 100% !important;
+      }
+      #google-register-button iframe {
+        width: 100% !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,12 +39,17 @@ const RegisterForm = ({state}) => {
       window.google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
         callback: handleGoogleLogin,
-        auto_select: false
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        use_fedcm_for_prompt: false
       });
+      
+      // Disable One Tap
+      window.google.accounts.id.disableAutoSelect();
       
       window.google.accounts.id.renderButton(
         document.getElementById('google-register-button'),
-        { theme: 'outline', size: 'large', text: 'signup_with', width: "100%" }
+        { theme: 'outline', size: 'large', text: 'signup_with' }
       );
     };
   }, []);
@@ -167,7 +185,7 @@ const RegisterForm = ({state}) => {
           </div>
         </div>
         
-         <div id="google-register-button" className="mt-4 w-full"  ></div>
+         <div id="google-register-button" className="mt-4 w-full flex justify-center"></div>
       </div>
       
       <div className="mt-4 text-center ">
