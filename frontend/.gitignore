@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 .env
+.env.example
 .env.production.example
 node_modules
 dist
